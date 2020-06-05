@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quizzler/question_brain.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class QuizPage extends StatefulWidget {
   @override
@@ -8,41 +9,51 @@ class QuizPage extends StatefulWidget {
 
 class _QuizPageState extends State<QuizPage> {
   QuizzBrain quizzBrain = QuizzBrain();
-
-  checkAndShowAlertDialog(BuildContext context) {
-    Widget continueButton = FlatButton(
-      child: Text('Play again'),
-      onPressed: () => Navigator.pop(context),
+  void showAlert() {
+    var alertStyle = AlertStyle(
+      animationType: AnimationType.fromBottom,
+      isCloseButton: false,
+      isOverlayTapDismiss: false,
+      descStyle: TextStyle(fontWeight: FontWeight.bold),
+      animationDuration: Duration(milliseconds: 400),
+      alertBorder: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20.0),
+        side: BorderSide(
+          color: Colors.grey,
+        ),
+      ),
+      titleStyle: TextStyle(
+        color: Colors.green,
+      ),
     );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text('Game over!'),
-      content:
-          Text('You awnsered ${quizzBrain.correctAwnser}/3 question correctly'),
-      actions: [
-        continueButton,
-      ],
-      elevation: 24.0,
-      backgroundColor: Colors.grey[300],
-      shape: RoundedRectangleBorder(),
-    );
-
-    if (quizzBrain.currentPosition > quizzBrain.quizzList.length - 1) {
-      // show the dialog
-      showDialog(
+    if (quizzBrain.getCurrentPosition() > quizzBrain.getListSize()) {
+      Alert(
         context: context,
-        builder: (BuildContext context) {
-          return alert;
-        },
-      );
+        style: alertStyle,
+        type: AlertType.success,
+        title: 'Done!',
+        desc:
+            'You answered ${quizzBrain.getCorrectAnswers()}/${quizzBrain.getListSize() + 1} questions correctly',
+        buttons: [
+          DialogButton(
+            child: Text(
+              "Play again",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            onPressed: () => Navigator.pop(context),
+            color: Colors.lightGreen,
+            radius: BorderRadius.circular(10.0),
+          ),
+        ],
+      ).show();
+      quizzBrain.reloadGame();
     }
   }
 
   void setStatePlay(bool option) {
     setState(() {
       quizzBrain.play(option);
-      checkAndShowAlertDialog(context);
+      showAlert();
     });
   }
 

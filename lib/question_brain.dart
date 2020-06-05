@@ -3,31 +3,38 @@ import 'package:flutter/material.dart';
 import 'data/Quizz.dart';
 
 class QuizzBrain {
-  List<Quizz> quizzList = [
+  List<Quizz> _quizzList = [
     Quizz(q: 'You can lead a cow down stairs but not up stairs.', a: false),
     Quizz(
         q: 'Approximately one quarter of human bones are in the feet.',
         a: true),
     Quizz(q: 'A slug\'s blood is green.', a: true)
   ];
-  int currentPosition = 0;
-  int correctAwnser = 0;
+  int _currentPosition = 0;
+  int _correctAnswer = 0;
   List<Icon> scoreKeeper = [];
+
   String setQuestion() {
-    if (currentPosition <= quizzList.length - 1) {
-      return quizzList[currentPosition].question;
+    if (_currentPosition <= _quizzList.length - 1) {
+      return _quizzList[_currentPosition].question;
     } else {
-      return quizzList[0].question;
+      return _quizzList[0].question;
     }
   }
 
-  void getAwnser(bool itemAwnser, bool optionClicked) {
+  void getAnswer(bool itemAwnser, bool optionClicked) {
     if (optionClicked && itemAwnser) {
       scoreKeeper.add(Icon(
         Icons.check,
         color: Colors.green,
       ));
-      correctAwnser++;
+      _correctAnswer++;
+    } else if (optionClicked == false && itemAwnser == false) {
+      scoreKeeper.add(Icon(
+        Icons.check,
+        color: Colors.green,
+      ));
+      _correctAnswer++;
     } else {
       scoreKeeper.add(Icon(
         Icons.close,
@@ -37,13 +44,23 @@ class QuizzBrain {
   }
 
   void play(bool optionClicked) {
-    if (currentPosition <= quizzList.length - 1) {
-      getAwnser(quizzList[currentPosition].awnser, optionClicked);
-      currentPosition++;
+    if (_currentPosition <= _quizzList.length - 1) {
+      getAnswer(_quizzList[_currentPosition].answer, optionClicked);
+      _currentPosition++;
     } else {
-      currentPosition = 0;
+      _currentPosition = 0;
       scoreKeeper = [];
-      correctAwnser = 0;
+      _correctAnswer = 0;
     }
   }
+
+  void reloadGame() {
+    _currentPosition = 0;
+    scoreKeeper = [];
+    _correctAnswer = 0;
+  }
+
+  int getListSize() => _quizzList.length - 1;
+  int getCorrectAnswers() => _correctAnswer;
+  int getCurrentPosition() => _currentPosition;
 }

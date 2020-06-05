@@ -1,9 +1,9 @@
 class Quizz {
   String question;
-  bool awnser;
+  bool answer;
 
   Quizz({String q, bool a}) {
     this.question = q;
-    this.awnser = a;
+    this.answer = a;
   }
 }
